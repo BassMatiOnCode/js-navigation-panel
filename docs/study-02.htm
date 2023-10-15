@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html lang="en-US"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="editor" content="USP" />
+<meta name="change-date" content="2023-09-10" />
+<meta name="version" content="1" />
+<meta name="tags" content="" />
+ 
+<title>Web Toolbox - Side Panel - Study 1</title>
+
+</head><body>
+<p><button id="expand-panel-button">Show</button></p>
+
+<h1>Docking Panel Study 1</h1>
+
+<p>Some content in the BODY element.</p>
+
+<div id="dock-panel" class="panel" dock="left" >
+<p><button id="collapse-panel-button">Close</button></p>
+<ul style="white-space:nowrap">
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic </li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+</ul>
+</div>
+
+<style>
+body {
+	margin : 20px ;
+	padding : 20px ;
+	border : 1px solid green ;
+	}
+[dock] > * {
+	margin-left : 20px ;
+	}
+[dock] {
+	position : absolute ;
+	transition : width linear 1s ;
+	background-color : white ;
+	border : 1px solid red ;
+	overflow : hidden ;
+	}
+[dock="left"] {
+	left : -2px ;
+	top : 0px ;
+	bottom : 0px ;
+	width : 0px ;
+	max-width : 100% ;
+	}
+[dock="right"] {
+	top : 0px ;
+	right : 2px ;
+	bottom : 0px ;
+	width : 0px ;
+	max-width : 100% ;
+	}
+[dock="top"] {
+	right : 0px ;
+	top : -2px ;
+	left : 0px ;
+	height : 0px ;
+	max-height : 100% ;
+	}
+[dock="bottom"] {
+	right : 0px ;
+	top : -2px ;
+	left : 0px ;
+	height : 0px ;
+	max-height : 100% ;
+	}
+</style>
+
+<script id="code-implementation" type="module"> 
+export function expand ( panel ) {
+	panel.style.overflow = "hidden" ;
+	panel.style.width = "auto" ;
+	const w = window.getComputedStyle( panel ).width ;
+	panel.style.width = "0px" ;
+	setTimeout ( ( ) => {
+	setTimeout ( ( ) => {
+		panel.style.width = w ;
+		} ) } ) ;
+	}
+export function collapse ( panel ) {
+	panel.style.overflow = "hidden" ;
+	panel.style.width = window.getComputedStyle( panel ).width ;
+	setTimeout ( ( ) => {
+	setTimeout ( ( ) => {
+		panel.style.width = "0px" ;
+		} ) } ) ;
+	}
+export function init ( root = document.body ) {
+	window[ "expand-panel-button" ].addEventListener( "click", ( ) => {
+		expand( window[ "dock-panel" ] );
+		} ) ;
+	window[ "collapse-panel-button" ].addEventListener( "click", ( ) => {
+		collapse( window[ "dock-panel" ] );
+		} ) ;
+	for ( const element of root.querySelectorAll( "[dock]" )) {
+		element.addEventListener( "transitionend" , evt => {
+			if ( evt.target.style.width !== "0px" ) {
+				evt.target.style.width = "auto" ;
+				evt.target.style.overflow = "auto" ;
+				}
+			} ) ;
+		}
+	}
+
+init( );
+</script>
+
+</body></html>

@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html lang="en-US"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="editor" content="USP" />
+<meta name="change-date" content="2023-08-02" />
+<meta name="version" content="1" />
+<meta name="tags" content="" />
+ 
+<title>Web Toolbox - Navigation Panel - Study 1</title>
+
+</head><body>
+<p><button id="button-open-navigation">Open</button></p>
+
+<h1>Navigation Panel Study 1</h1>
+
+<p>some content</p>
+
+<div id="navigation-panel">
+<p><button id="button-close-navigation">Close</button></p>
+<ul style="">
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic </li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+</ul>
+</div>
+
+<style>
+body {
+	margin-right : 10px ;
+	}
+html {
+	border : 1px solid green ;
+	position : absolute ;
+	top : 0px ;
+	right : 0px ;
+	bottom : 0px ;
+	left : 0px ;
+	}
+#navigation-panel {
+	position : absolute ;
+	top : -1px ;
+	left : -1px ;
+	bottom : 10px ;
+	width : 0px ;
+	max-width : 100% ;
+	background-color : white ;
+	border : 1px solid orange ;
+	overflow : hidden ;
+	transition : width linear 1s ;
+	white-space : nowrap ;
+	}
+#navigation-panel[expanded] {
+	width : auto ;
+	}
+#navigation-panel > * {
+	margin-left : 10px ;
+	margin-right : 10px ;
+	}
+#navigation-panel > ul {
+	}
+</style>
+
+<script id="code-implementation" type="module"> 
+const navigationPanel = document.getElementById( "navigation-panel" );
+function expand ( ) {
+	navigationPanel.setAttribute( "expanded", "" );
+	console.log( navigationPanel.scrollWidth );
+	const w = window.getComputedStyle( navigationPanel ).width ;
+	console.log( w );
+	// Prevent immediate expansion
+	navigationPanel.style.width = "0px" ;
+	window.requestAnimationFrame ( ( ) => {
+	window.requestAnimationFrame ( ( ) => {
+		navigationPanel.style.width = w ;
+		} ) ;
+		} ) ;
+	}
+function collapse ( ) {
+	navigationPanel.style.width = window.getComputedStyle( navigationPanel ).width ;
+	navigationPanel.style.removeProperty( "overflow" ) ;
+	navigationPanel.removeAttribute( "expanded" );
+	window.requestAnimationFrame ( ( ) => {
+	window.requestAnimationFrame ( ( ) => {
+		navigationPanel.style.removeProperty( "width" ) ;
+		} ) ;
+		} ) ;
+	}
+document.getElementById( "button-open-navigation" ).addEventListener( "click" , expand );
+document.getElementById( "button-close-navigation" ).addEventListener( "click", collapse ) ;
+navigationPanel.addEventListener( "transitionend", evt => {
+	if ( navigationPanel.style.width !== "" ) {
+		navigationPanel.style.removeProperty( "width" ) ;
+		navigationPanel.style.setProperty( "overflow", "auto" ) ;
+		}
+	} ) ;
+</script>
+
+</body></html>

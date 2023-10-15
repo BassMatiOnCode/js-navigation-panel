@@ -7,7 +7,7 @@ line { stroke: white; stroke-width: 0.5; }
 text { fill : white; text-anchor : left ; dominant-baseline : middle ; font-size : 22px }
 ]]></style>
 
-<text x="10" y="4">Web Tools : Navigation Panel</text>
+<text x="10" y="4">Web Toolbox : Docking Panel</text>
 <line x1="3" x2="3" y1="-20" y2="20" />
 
 </svg>

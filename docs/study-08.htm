@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html lang="en-US"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="editor" content="USP" />
+<meta name="change-date" content="2023-09-10" />
+<meta name="version" content="1" />
+<meta name="tags" content="" />
+ 
+<title>Web Toolbox - Side Panel - Study 1</title>
+
+</head><body>
+<p><button id="expand-panel-button">Show</button>
+<button id="dockLeftButton" active>Left</button>
+<button id="dockTopButton">Top</button>
+<button id="dockRightButton">Right</button>
+<button id="dockBottomButton">Bottom</button></p>
+
+<h1>Docking Panel Study 8</h1>
+
+<p>This study exploits the <tt>calc()</tt> function to reserve space for the panel border. Works like a charm, structures are simple and sensible.</p>
+
+<div id="panel" dock="left">
+<p><button id="collapse-panel-button">Close</button></p>
+<ul style="white-space:nowrap">
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic last</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>last</li>
+</ul>
+</div>
+
+<style>
+[dock] {
+	position : absolute ;
+	border : 1px solid orange ;
+	background-color : white ;
+	overflow : hidden ;
+	display : none ;
+	}
+[dock = "left"], [dock = "right"] {
+	top : 0px ;
+	bottom : 0px ;
+	width : 0px ;
+	max-width : calc( 100% - 2px );
+	transition : width linear 1s ;
+	}
+[dock = "left"] {
+	left : 0px ;
+	}
+[dock = "right"] {
+	right : 0px ;
+	}
+[dock = "top"], [dock = "bottom"] {
+	left : 0px ;
+	right : 0px ;
+	max-height : calc( 100% - 2px );
+	height : 0px ;
+	transition : height linear 1s ;
+	}
+[dock = "top"] {
+	top : 0px ;
+	}
+[dock = "bottom"] {
+	bottom : 0px ;
+	}
+button[active] {
+	border : 1px solid orange ;
+	border-radius : 3px ;
+	padding : 2px 7px ;
+	}
+</style>
+
+<script id="code-implementation" type="module"> 
+export function getPropertyName ( panel ) {
+	switch ( panel.getAttribute( "dock" )) {
+	case "left" :
+	case "right" :
+		return "width" ;
+	case "top" :
+	case "bottom" :
+		return "height" ;
+	}	}
+export function getBorderStyleName ( panel, postfix = "" ) {
+	//	Returns the a border style base name, or a complete 
+	//	border style name if completed with postfix value.
+	switch ( panel.getAttribute( "dock" )) {
+	case "left" :
+		return "borderRight" + postfix ;
+	case "right" :
+		return "borderLeft" + postfix ;
+	case "top" :
+		return "borderBottom" + postfix ;
+	case "bottom" :
+		return "borderTop" + postfix ;
+	}	}
+export function setBorder ( panel, style="solid" ) {
+	//	style : { "solid" | "none" }
+	if ( panel.hasAttribute( "border" )) panel.style[ getBorderStyleName( panel, "Style" ) ] = style ;
+	}
+export function expand ( panel ) {
+	if ( panel.style.display !== "" ) return ;
+	panel.style.display = "block" ;
+	const property = getPropertyName( panel );
+	panel.style[ property ] = "auto" ;
+	const length = window.getComputedStyle( panel )[ property ] ;
+	panel.style[ property ] = "0px" ;
+	setTimeout ( ( ) => {
+	setTimeout ( ( ) => {
+		panel.style[ property ] = length ;
+		} ) } ) ;
+	}
+export function collapse ( panel ) {
+	panel.style.removeProperty( "overflow" );
+	const property = getPropertyName( panel );
+	panel.style[ property ] = window.getComputedStyle( panel )[ property ] ;
+	setTimeout ( ( ) => {
+	setTimeout ( ( ) => {
+		panel.style[ property ] = "0px" ;
+		} ) } ) ;
+	}
+export function transitionEndHandler ( evt ) {
+	const property = getPropertyName( evt.target );
+	if ( evt.target.style[ property ] === "0px" ) {  
+		// collapsed
+		evt.target.style.removeProperty( property );
+		evt.target.style.removeProperty( "display" );
+		}
+	else {  
+		// expanded
+		evt.target.style[ property ] = "auto" ;
+		evt.target.style.overflow = "auto" ;
+	}	}
+export function init ( root = document.body ) {
+	window[ "expand-panel-button" ].addEventListener( "click", ( ) => {
+		expand( panel );
+		} ) ;
+	window[ "collapse-panel-button" ].addEventListener( "click", ( ) => {
+		collapse( panel );
+		} ) ;
+	function setActiveButton ( button ) {
+		document.querySelector( "button[active]" ).removeAttribute( "active" );
+		button.toggleAttribute( "active" );
+		}
+	dockLeftButton.addEventListener( "click", ( evt ) => {
+		panel.setAttribute( "dock", "left" );
+		setActiveButton( evt.target );
+		} ) ;
+	dockTopButton.addEventListener( "click", ( evt ) => {
+		panel.setAttribute( "dock", "top" );
+		setActiveButton( evt.target );
+		} ) ;
+	dockRightButton.addEventListener( "click", ( evt ) => {
+		panel.setAttribute( "dock", "right" );
+		setActiveButton( evt.target );
+		} ) ;
+	dockBottomButton.addEventListener( "click", ( evt ) => {
+		panel.setAttribute( "dock", "bottom" );
+		setActiveButton( evt.target );
+		} ) ;
+	for ( const element of root.querySelectorAll( "[dock]" )) {
+		element.addEventListener( "transitionend" , transitionEndHandler ) ;
+	}	}
+
+init( );
+</script>
+
+</body></html>

@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="en-US"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="editor" content="USP" />
+<meta name="change-date" content="2023-09-10" />
+<meta name="version" content="1" />
+<meta name="tags" content="" />
+
+<link rel="stylesheet" href="/inc/dock/dock-1.css" />
+<script type="module" src="/inc/dock/dock-1.js" ></script>
+ 
+<title>Web Toolbox - Docking Panel Demo</title>
+
+</head><body>
+<p><button id="expand-panel-button">Show</button>
+<button id="dockLeftButton" active>Left</button>
+<button id="dockTopButton">Top</button>
+<button id="dockRightButton">Right</button>
+<button id="dockBottomButton">Bottom</button></p>
+
+<h1>Docking Panel Demo</h1>
+
+<p>This demo illustratest the <tt>dock</tt> web toolbox component.</p>
+<p>Click on one of the buttons (left, top, right, bottom) to choose the docking side. Then click on the "show" button to expand the panel. Resize the browser window and observe the panel folloing the browser window size until it reaches its maximum expansion.</p>
+<p>Click on the "close" button to close the panel. Notice the smooth transitions between expanded and collapsed states.</p>
+
+<div id="panel" dock="left">
+<p><button id="collapse-panel-button">Close</button></p>
+<ul style="white-space:nowrap">
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic last</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>last</li>
+</ul>
+</div>
+
+<style>
+button[active] {
+	border : 1px solid orange ;
+	border-radius : 3px ;
+	padding : 2px 7px ;
+	}
+</style>
+
+<script id="code-implementation" type="module"> 
+import * as dock from "/inc/dock/dock-1.js" ;
+dock.init();
+window[ "collapse-panel-button" ].addEventListener( "click", ( ) => {
+	dock.collapse( panel );
+	} ) ;
+window[ "expand-panel-button" ].addEventListener( "click", ( ) => {
+	dock.expand( panel );
+	} ) ;
+function setActiveButton ( button ) {
+	document.querySelector( "button[active]" ).removeAttribute( "active" );
+	button.toggleAttribute( "active" );
+	}
+dockLeftButton.addEventListener( "click", ( evt ) => {
+	panel.setAttribute( "dock", "left" );
+	setActiveButton( evt.target );
+	} ) ;
+dockTopButton.addEventListener( "click", ( evt ) => {
+	panel.setAttribute( "dock", "top" );
+	setActiveButton( evt.target );
+	} ) ;
+dockRightButton.addEventListener( "click", ( evt ) => {
+	panel.setAttribute( "dock", "right" );
+	setActiveButton( evt.target );
+	} ) ;
+dockBottomButton.addEventListener( "click", ( evt ) => {
+	panel.setAttribute( "dock", "bottom" );
+	setActiveButton( evt.target );
+	} ) ;
+</script>
+
+</body></html>

@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html lang="en-US"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="editor" content="USP" />
+<meta name="change-date" content="2023-09-10" />
+<meta name="version" content="1" />
+<meta name="tags" content="" />
+ 
+<title>Web Toolbox - Side Panel - Study 1</title>
+
+</head><body>
+<p><button id="expand-panel-button">Show</button></p>
+
+<h1>Docking Panel Study 7</h1>
+
+<p>This study builds on the working study 6, and extends the code to horizontal docking.</p>
+
+<div id="panel" dock="right">
+<div>
+<p><button id="collapse-panel-button">Close</button></p>
+<ul style="white-space:nowrap">
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic topic last</li>
+<li>topic</li>
+<li>topic</li>
+<li>topic</li>
+<li>last</li>
+</ul>
+</div>
+</div>
+
+<style>
+[dock] {
+	/* Provides space at the bottom where the panel border can go */
+	position : absolute ;
+	top : 0px ;
+	right : 0px ;
+	bottom : 0px ;
+	left : 0px ;
+	border-top : 1px none blue ;
+	display : none; 
+	overflow : visible ;
+	}
+[dock="top"] {
+	bottom : 2px ;
+	}
+[dock="bottom"] {
+	top : 2px ;
+	}
+[dock="left"] {
+	right : 2px ;
+	}
+[dock="right"] {
+	left : 2px ;
+	}
+[dock] > div {
+	background-color : white ;
+	overflow : hidden ;
+	border : 1px solid blue ;
+	position : absolute ;
+	}
+[dock="top"] > div ,
+[dock="bottom"] > div {
+	left : 0px ;
+	right : 0px ;
+	transition : height linear 1s ;
+	max-height : 100% ;
+	height : 0px ;
+	}
+[dock="bottom"] > div {
+	bottom : 0px ;
+	xborder-bottom-style : none ;
+	}
+[dock="top"] > div {
+	top : 0px ;
+	xborder-top-style : none ;
+	}
+[dock="left"] > div ,
+[dock="right"] > div {
+	top : 0px ;
+	bottom : 0px ;
+	transition : width linear 1s ;
+	max-width : 100% ;
+	width : 0px ;
+	}
+[dock="left"] > div {
+	left : 0px ;
+	}
+[dock="right"] > div {
+	right : 0px ;
+	}
+</style>
+
+<script id="code-implementation" type="module"> 
+export function getPropertyName ( panel ) {
+	switch ( panel.getAttribute( "dock" )) {
+	case "left" :
+	case "right" :
+		return "width" ;
+	case "top" :
+	case "bottom" :
+		return "height" ;
+	}	}
+export function getBorderStyleName ( panel, postfix = "" ) {
+	//	Returns the a border style base name, or a complete 
+	//	border style name if completed with postfix value.
+	switch ( panel.getAttribute( "dock" )) {
+	case "left" :
+		return "borderRight" + postfix ;
+	case "right" :
+		return "borderLeft" + postfix ;
+	case "top" :
+		return "borderBottom" + postfix ;
+	case "bottom" :
+		return "borderTop" + postfix ;
+	}	}
+export function setBorder ( panel, style="solid" ) {
+	//	style : { "solid" | "none" }
+	if ( panel.hasAttribute( "border" )) panel.style[ getBorderStyleName( panel, "Style" ) ] = style ;
+	}
+export function expand ( panel ) {
+	panel.style.display = "block" ;
+	const container = panel.firstElementChild ;
+	const property = getPropertyName( panel );
+	container.style[ property ] = "auto" ;
+	const length = window.getComputedStyle( container )[ property ] ;
+	container.style[ property ] = "0px" ;
+	setTimeout ( ( ) => {
+	setTimeout ( ( ) => {
+		container.style[ property ] = length ;
+		} ) } ) ;
+	}
+export function collapse ( panel ) {
+	const container = panel.firstElementChild ;
+	container.style.overflow = "hidden" ;
+	const property = getPropertyName( panel );
+	container.style[ property ] = window.getComputedStyle( container )[ property ] ;
+	setTimeout ( ( ) => {
+	setTimeout ( ( ) => {
+		container.style[ property ] = "0px" ;
+		} ) } ) ;
+	}
+export function transitionEndHandler ( evt ) {
+	const property = getPropertyName( evt.target.parentElement );
+	if ( evt.target.style[ property ] === "0px" ) {  // collapsed
+		evt.target.parentElement.style.display = "none" ;
+		}
+	else {  // expanded
+		evt.target.style[ property ] = "auto" ;
+		evt.target.style.overflow = "auto" ;
+	}	}
+export function init ( root = document.body ) {
+	window[ "expand-panel-button" ].addEventListener( "click", ( ) => {
+		expand( panel );
+		} ) ;
+	window[ "collapse-panel-button" ].addEventListener( "click", ( ) => {
+		collapse( panel );
+		} ) ;
+	for ( const element of root.querySelectorAll( "[dock]" )) {
+		element.addEventListener( "transitionend" , transitionEndHandler ) ;
+	}	}
+
+init( );
+</script>
+
+</body></html>

@@ -1,0 +1,296 @@
+﻿<!DOCTYPE html>
+<html lang="en-US"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="template-info" file-name="empty.htm" version="2022-12-01" editor="USP" />
+<meta name="author" content="USP" />
+<meta name="creation-date" content="2023-08-02" />
+<meta name="editor" content="USP" />
+<meta name="change-date" content="2023-09-11" />
+<meta name="version" content="1" />
+<meta name="categories" content="" />
+<meta name="tags" content="" />
+<meta name="description" content="The docking panel web-toolbox component implements a panel wich can dock to either side of the browser window, left, top, right or bottom. The panel can be expanded to show its content, and collapsed to hide the content. Transition between collapsed and expanded states occurs in a smooth, curtain-like transition." />
+
+<link rel="icon" type="image/png" href="/favicon.png" sizes="16x16" />
+<link rel="stylesheet" href="/inc/page.css" />
+<link rel="stylesheet" href="/site.css" />
+ 
+<title>Web Toolbox - Docking Panels</title>
+
+</head><body><header id="page-header"><object data="title.svg" type="image/svg+xml"></object></header><div id="main-toolbar"></div><main id="page-content">
+
+<h1>Docking Panels</h1>
+
+<p id="page-abstract"></p>
+
+<h2 cbc>Overview</h2><div>
+
+<p>A panel can dock to either side of the browser window, left, top, right or bottom. The component shows horizontal and vertical scroll bars if needed. If the parent window is resized, the docking element follows the parent window size until the maximum size is reached. The maximum size of the panel is determined by its content.</p>
+
+<p>Make an HTML element docking, decorate it with the <tt>dock</tt> attribute:</p>
+
+<figcaption class="listing">Using a docking panel</figcaption>
+<pre>
+&lt;div id="panel" dock="right"&gt;
+<cc>&lt;!-- Payload content goes here --&gt;</cc>
+&lt;/div&gt;
+</pre>
+
+<p>You can decorate any block element with a <tt>dock</tt> attribute, a <tt>div</tt> element is a natural choice.</p>
+
+<p>The script module provides two functions to open and close a docking panel:</p>
+
+<figcaption class="listing">Opening and closing the docking panel</figcaption>
+<pre>
+expand( panel );
+collapse( panel );
+</pre>
+
+<p>These are usually called in GUI event handlers.</p>
+
+<p>To use the docking panel component on a web page, include the CSS and script files:</p>
+
+<figcaption class="listing">Including the files:</figcaption>
+<pre>
+&lt;link rel="stylesheet" href="/path/to/dock-1.css" /&gt;
+&lt;script type="module"&gt;
+import * as dock from "/path/to/dock-1.js" ;
+dock.init();
+&lt;/script&gt;
+</pre>
+
+<!--h2--Introduction--></div>
+
+<h2 cbc>Implementation Details</h2><div>
+
+<p>The following CSS rule describes the behavior of an expanded panel, docked to the left side of the browers window:</p>
+
+<figcaption class="listing">Content-defined size limitation</figcaption>
+<pre>
+[dock = "left"] {
+	position : absolute ;
+	top : 0px ;
+	botton : 0px ;
+	left : 0px ;
+	width : auto ;
+	max-width : 100% ;
+	overflow : auto ;
+	}
+</pre>
+
+<p>The panel is docked to three sides of its parent window. Its width is determined by its content (<tt>width : auto</tt>), and limited to the width of the browser window (<tt>max-width : 100%</tt>). If the panel content overflows its container, the panel shows horizontal and/or vertical scroll bars (<tt>overflow : auto</tt>).</p>
+
+<p>At first sight, this looks perfect. But things change if the panel gets a border:</p>
+
+<figcaption class="listing">Border on the docking panel</figcaption>
+<pre>
+[dock] {
+	border : 1px solid orange ;
+	}
+</pre>
+
+<p>A border adds to the panel size. So if <tt>max-width : 100%</tt> is in effect, the panel size is actually two pixels wider than the browser window. As a result, the browser window shows a horizontal scroll bar, and so does the docking panel. This is not what we want.</p>
+
+<p>A possible solution with an additional container can reduce the space for the panel ant thereby provide the space for the borders, but with the help fo the CSS <tt>calc()</tt> function the fix is rather simple:</p>
+
+<figcaption class="listing">Content-defined size limitation</figcaption>
+<pre>
+[dock = "left"] {
+	max-width : calc( 100% - 2px ) ;
+	}
+</pre>
+
+<p>Let's go through the CSS code first.</p>
+
+<h3 cbc>CSS Code</h3><div>
+
+<p>These are the core properties for all docking elements:</p>
+
+<figcaption class="listing">CSS docking element core properties</figcaption>
+<pre>
+[dock] {
+	position : absolute ;
+	border : 1px solid orange ;
+	background-color : white ;
+	overflow : hidden ;
+	display : none ;
+	}
+</pre>
+
+<p>The <tt>position : absolute</tt> allows to position the element in its parent container with <tt>top</tt>, <tt>right</tt>, <tt>bottom</tt> and <tt>left</tt> properties. Overflowing content is normally hidden without the panel showing scroll bars, and the component is not rendered by default.</p>
+
+<p>The following rules build on that core:</p>
+
+<figcaption class="listing">Horizontally expanding elements</figcaption>
+<pre>
+[dock = "left"], [dock = "right"] {
+	top : 0px ;
+	bottom : 0px ;
+	width : 0px ;
+	max-width : calc( 100% - 2px );
+	transition : width linear 1s ;
+	}
+</pre>
+
+<p>The rule above docks the panel to the top and bottom sides of its parent window and set the initial width to zero pixels so that it appears collapsed when shown.</p>
+
+<p>The maximum width is determined by the width of the parent window (100%), minus the sum of the widths of the left and right borders. The last property defines a linear transition on the <tt>width</tt> property.</p>
+
+<figcaption class="listing">Docking the panel</figcaption>
+<pre>
+[dock = "left"] {
+	left : 0px ;
+	}
+[dock = "right"] {
+	right : 0px ;
+	}
+</pre>
+
+<p>The last two instructions above dock the panel to the left or right border of the parent window.</p>
+
+<p>The same structure applies for vertically expanding panels:</p>
+
+<figcaption class="listing">Vertically expanding panels</figcaption>
+<pre>
+[dock = "top"], [dock = "bottom"] {
+	left : 0px ;
+	right : 0px ;
+	max-height : calc( 100% - 2px );
+	height : 0px ;
+	transition : height linear 1s ;
+	}
+[dock = "top"] {
+	top : 0px ;
+	}
+[dock = "bottom"] {
+	bottom : 0px ;
+	}
+</pre>
+
+<p>That's it.</p>
+
+<!--h3--CSS Code--></div>
+
+<h3 cbc>Script Support</h3><div>
+
+<p>The <tt>dock.js</tt> module provides a number of functions that reduces the complexity of juggling around with the CSS properties:</p>
+
+<ul>
+<li>init()</li>
+<li>expand()</li>
+<li>collapse()</li>
+</ul>
+
+<p>Let's start with the init function:</p>
+
+<figcaption class="listing">The page init function</figcaption>
+<pre>
+export function init ( root = document.body ) {
+	for ( const element of root.querySelectorAll( "[dock]" )) {
+		element.addEventListener( "transitionend" , transitionEndHandler ) ;
+	}	}
+</pre>
+
+<p>The code collects all elements with a <tt>dock</tt> attribute and registers a transition end event handler with them.</p>
+
+<p>To open a docked element, call the <tt>expand()</tt> function: </p>
+
+<figcaption class="listing">The expand()  function</figcaption>
+<pre>
+export function expand ( panel ) {
+	if ( panel.style.display !== "" ) return ;
+	panel.style.display = "block" ;
+	const property = getPropertyName( panel );
+	panel.style[ property ] = "auto" ;
+	const length = window.getComputedStyle( panel )[ property ] ;
+	panel.style[ property ] = "0px" ;
+	setTimeout ( ( ) => {
+	setTimeout ( ( ) => {
+		panel.style[ property ] = length ;
+		} ) } ) ;
+	}
+</pre>
+
+<p>This function is usually called from a GUI click event handler.</p>
+<p>The first instruction bails out if the panel is already open. If not, it is made visible by setting <tt>element.style.display = block</tt>.</p>
+<p>The next instruction determines the CSS property name to be fiddled with, either <tt>width</tt>, or <tt>height</tt>. Then this property is set to <tt>auto</tt>, and we can retrieve the width or height required show the entire panel content without clipping. The value is stored in the <tt>length</tt> variable, it will be used shortly.</p>
+<p>A CSS transition needs numerical start and end property values. The next instructions ensures this by setting a starting width of zero pixels.</p>
+<p>We cannot set the end value immediately, the JavaScript enginge needs some event loop rounds to update the DOM tree properly, before the transition can be started. Two consecutive <tt>setTimeout()</tt> calls ensure that. The second call gets a callback function that finally sets the panel size to the size previously calculated. Now the transition starts and the panel begins to expand in the desired direction.</p>
+
+<p>Note that style propeties, set directly on the element, overrides settings defined in CSS rules!</p>
+
+<p>When the transition ends, the registered event handler is called:</p>
+
+<figcaption class="listing">Finishing the expansion</figcaption>
+<pre>
+export function transitionEndHandler ( evt ) {
+	const property = getPropertyName( evt.target );
+	if ( evt.target.style[ property ] === "0px" ) {  
+		...
+		}
+	else {  
+		evt.target.style[ property ] = "auto" ;
+		evt.target.style.overflow = "auto" ;
+	}	}
+</pre>
+
+<p>Here the height or width style property is set to <tt>auto</tt>, which causes the panel to expand to the maximum size allowed by its parent window. Should the required space be larger than the parent window, setting <tt>overflow</tt> to <tt>auto</tt> ensures that the panel shows scroll bars as necessary.</p> 
+
+<p>Collapsing the docking panel is similar, a GUI event handler calls the <tt>collapse()</tt> function:</p>
+
+<figcaption class="listing">Collapsing a panel</figcaption>
+<pre>
+export function collapse ( panel ) {
+	panel.style.removeProperty( "overflow" );
+	const property = getPropertyName( panel );
+	panel.style[ property ] = window.getComputedStyle( panel )[ property ] ;
+	setTimeout ( ( ) => {
+	setTimeout ( ( ) => {
+		panel.style[ property ] = "0px" ;
+		} ) } ) ;
+	}
+</pre>
+
+<p>Firstly, the scrollbars are hidden by removing the <tt>overflow</tt> style property. Then the current numerical panel size is retrieved and written to <tt>style.height</tt> or <tt>style.width</tt> property. After to event loop rounds in the scripting engine, the transition end value (0px) is written to that property, and the contraction begins.</p>
+
+<p>When finished, the transition end event handler ist called again:</p>
+
+<figcaption class="listing">Finishing contraction</figcaption>
+<pre>
+export function transitionEndHandler ( evt ) {
+	const property = getPropertyName( evt.target );
+	if ( evt.target.style[ property ] === "0px" ) {  
+		evt.target.style.removeProperty( property );
+		evt.target.style.removeProperty( "display" );
+		}
+	else {  
+		...
+	}	}
+</pre>
+
+<p>Here, the style properties, previously set on the element, are removed so that the values defined in the CSS rules are engaged again.</p>
+
+<p>Finally, the support function that returns the CSS property to be controlled, depending on the docking side::</p>
+
+<figcaption class="listing">Size property name determination</figcaption>
+<pre>
+export function getPropertyName ( panel ) {
+	switch ( panel.getAttribute( "dock" )) {
+	case "left" :
+	case "right" :
+		return "width" ;
+	case "top" :
+	case "bottom" :
+		return "height" ;
+	}	}
+</pre>
+
+<p>That should be self-explanatory.</p>
+
+<!--h3--Script Support--></div>
+
+<!--h2 --Implementation Details--></div>
+
+
+</main><footer id="page-footer"></footer><script type="module" src="/inc/page.js" ></script></body></html>
