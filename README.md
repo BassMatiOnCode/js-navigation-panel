@@ -3,7 +3,7 @@ A web toolbox component, implements a docking collapsible panel.
 
 A block-type container (e. g. a DIV element) can be "docked" to any side of its parent window by setting the dock attribute:
 
-<pre>&gt;div dock="left"&gt;...&lt;/div&gt;</pre>
+<pre>&lt;div dock="left"&gt;...&lt;/div&gt;</pre>
 
 A CSS and a JavaScript file provide the necessary styles and functionality.
 
